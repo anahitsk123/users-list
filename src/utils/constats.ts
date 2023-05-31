@@ -1,1 +1,1 @@
-export const numberOfItemsPerPage = 4;
+export const rowsPerPage = 4;

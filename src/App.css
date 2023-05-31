@@ -28,6 +28,15 @@
   color: #61dafb;
 }
 
+.Row-address {
+  width: 50px;
+  max-width: 50px;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

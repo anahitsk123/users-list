@@ -5,7 +5,7 @@ export interface UserModel{
     address: Address;
 }
 
-interface Address {
+export interface Address {
     street: string;
     suite: string;
     city: string;
