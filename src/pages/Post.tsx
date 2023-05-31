@@ -1,64 +1,91 @@
-import React, { useState, useEffect } from 'react'
-import { useAppDispatch,useAppSelector } from '../hooks/reduxHooks';
-import { fetchUsers } from '../store/userActions';
+import React, {useState, useEffect, SyntheticEvent} from 'react';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import {fetchUserPosts, postActions, removePost} from '../store/postActions';
 
+import {Paper, Container, CardHeader, IconButton} from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
+
+import {DataGrid, GridColDef, GridRenderCellParams, GridToolbar} from '@mui/x-data-grid';
+
+const columns: GridColDef[] = [
+    {
+        field: 'title',
+        headerName: 'Title',
+        width: 400,
+        editable: false,
+    },
+    {
+        field: 'body',
+        headerName: 'Body',
+        editable: false,
+        cellClassName: 'Cell-body',
+        filterable: false,
+    },
+    {
+        field: 'id',
+        headerName: '',
+        width: 90,
+        renderCell:
+            (params:GridRenderCellParams) =>
+                <IconButton>
+                    <ClearIcon />
+                </IconButton>
+    },
+];
 
 const Posts = () => {
-    const [ userId, setUserId ] = useState();
     const dispatch = useAppDispatch();
-    const allUsers = useAppSelector(state => state.users.allUsers);
-    // const clickHandler = () => {
-    //     dispatch(fetchUsers())
-    // }
-    // // const searchHandler=()=>{
-    // //     dispatch(fetchParticularTodo(todo_id))
-    // // }
+    const allPosts = useAppSelector(state => state.posts.allPosts);
+
+    let { id } = useParams();
+
     useEffect(() => {
-        dispatch(fetchUsers());
-    }, [allUsers, dispatch]);
+        // @ts-ignore
+        dispatch(fetchUserPosts(id * 1));
+    }, [allPosts, dispatch, id]);
+
+    const removeRowItem = (paramas: any) => {
+        // @ts-ignore
+        console.log('papapap', paramas)
+        if(paramas?.field === 'id') {
+            dispatch(removePost(paramas.id * 1));
+        }
+    }
+
 
     return (
-        <>
-            <div>
-                <label>Enter the todo id : </label>
-                {/*<input onChange={(event)=>{setTodo_id(parseInt(event.target.value))}} type="number"></input>*/}
-                {/*<button onClick={searchHandler}> Find </button>*/}
-                <div>
-                    <h3>Particular TODO </h3>
-                    {
-                        // checkparticularTodo() &&
-                        // (<div className="todo-container" key={particularTodo.id}>
-                        //     <p className="todo-child1">{particularTodo.id}</p>
-                        //     <p className="todo-child2">{particularTodo.userId}</p>
-                        //     <p className="todo-child3">{particularTodo.title}</p>
-                        //     <p className="todo-child4">{particularTodo.completed}</p>
-                        // </div>)
-                    }
-
-                </div>
-            </div>
-            <div>
-                {/*<button onClick={clickHandler}>All Todos</button>*/}
-                <div>
-                    <h3>TODO LIST :</h3>
-                    <div className="todo-container">
-                        <p className="todo-child1">ID</p>
-                        <p className="todo-child2">USER ID</p>
-                        <p className="todo-child3">TITLE</p>
-                    </div>
-                    {
-                        allUsers.map((user)=>(
-                            <div className="todo-container" key={user.id}>
-                                <p className="todo-child1">{user.username}</p>
-                                <p className="todo-child2">{user.name}</p>
-                                {/*<p className="todo-child3">{user.address}</p>*/}
-                            </div>
-                        ))
-                    }
-                </div>
-            </div>
-        </>
-
+        <Container>
+            <CardHeader title='Current User Posts' />
+            <Paper sx={{ overflow: 'hidden' }}>
+                <DataGrid
+                    rows={allPosts}
+                    columns={columns}
+                    initialState={{
+                        pagination: {
+                            paginationModel: {
+                                pageSize: 5,
+                            },
+                        },
+                    }}
+                    onCellClick={(params) => removeRowItem(params)}
+                    disableColumnFilter
+                    disableColumnMenu
+                    pageSizeOptions={[5]}
+                    disableRowSelectionOnClick
+                    disableVirtualization
+                    disableColumnSelector
+                    disableDensitySelector
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                        toolbar: {
+                            showQuickFilter: true,
+                            quickFilterProps: { debounceMs: 500 },
+                        },
+                    }}
+                />
+            </Paper>
+        </Container>
     );
-}
+};
 export default Posts;

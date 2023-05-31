@@ -11,7 +11,10 @@ export const fetchUsers = ():ThunkAction<void,RootState,unknown,AnyAction> => {
     return async(dispatch,getState)=>{
         if(getState().users.allUsers.length === 0){
             const response:UserModel[] = await UsersService.getAllUsers();
-            dispatch(userActions.setUsers(response))
+            dispatch(userActions.setUsers(
+                // @ts-ignore
+                response.sort((a, b) => a.username - b.username)
+            ))
         }
     }
 };

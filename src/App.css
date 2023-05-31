@@ -37,6 +37,15 @@
   white-space: nowrap;
 }
 
+.Cell-body {
+  width: 650px !important;
+  max-width: 650px !important;
+  min-width: 650px !important;
+  display: block !important;
+  text-overflow: initial !important;
+  white-space: normal !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
